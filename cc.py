@@ -4,11 +4,10 @@ import os
 import time
 
 class Cryptocurrency:
-	def __init__(self,name,period):
+	def __init__(self,name):
 		self.name = name
 		self.file = self.name + '_overnight.csv'
 		self.url = 'https://btc-e.com/api/2/' + self.name + '/ticker'
-		self.period = period
 		
 	def log_price(self):
 		f = open(self.file, 'a')
@@ -29,7 +28,7 @@ class Cryptocurrency:
 
 period = 60
 i = 0
-usd_rur = Cryptocurrency('usd_rur', period)
+usd_rur = Cryptocurrency('usd_rur')
 
 while True:
 	if i > 24 * period:
