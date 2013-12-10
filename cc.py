@@ -11,29 +11,31 @@ class Cryptocurrency:
 		
 	def log_price(self):
 		f = open(self.file, 'a')
+		line = '\n'
 
 		try:
 			response = urllib2.urlopen(self.url)
+			data = json.load (response)
+			line = str(data['ticker'].values()).strip('[]') + '\n'
 		except urllib2.HTTPError, err:
-			f.write(str(err) + '\n')
+			line = str(err) + '\n'
 		except:
-			f.write("--")
+			line = '--\n'
 		
-		data = json.load (response)
-		line = str(data['ticker'].values()).strip('[]') + '\n'
 		f.write(line)
-		
 		f.close()
-		return True
 
 period = 60
 i = 0
 usd_rur = Cryptocurrency('usd_rur')
+btc_ltc = Cryptocurrency('btc_ltc')
 
 while True:
 	if i > 24 * period:
 		break
-	res = usd_rur.log_price()
-	if res:
-		i = i + 1
-		time.sleep(period)
+
+	usd_rur.log_price()
+	btc_ltc.log_price()
+	
+	i = i + 1
+	time.sleep(period)
