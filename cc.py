@@ -3,36 +3,38 @@ import json
 import os
 import time
 
-# hello, this is just a silly test
-
-class pair:
-	def __init__(self,name,fileLocation,period):
+class Cryptocurrency:
+	def __init__(self,name,period):
 		self.name = name
-		self.file = fileLocation
-		self.url = url
+		self.file = self.name + '_overnight.csv'
+		self.url = 'https://btc-e.com/api/2/' + self.name + '/ticker'
 		self.period = period
+		
+	def log_price(self):
 		f = open(self.file, 'a')
-		i = 0
 
-		while True:
-			# print ("it is working")
-			if i%10 ==0:
-				f = open(self.file, 'a')
-			try:
-				response = urllib2.urlopen(self.url)
-			except urllib2.HTTPError, err:
-				f.write(str(err) + '\n')
-				continue
-			except:
-				f.write("--")
-				continue
-			data = json.load (response)
-			line = str(data['ticker'].values()).strip('[]') + '\n'
-			f.write(line)
-			i = i+1
-			if i%10 ==0:
-				f.close()
-				# print ("closed it")
-			time.sleep(period)
+		try:
+			response = urllib2.urlopen(self.url)
+		except urllib2.HTTPError, err:
+			f.write(str(err) + '\n')
+		except:
+			f.write("--")
+		
+		data = json.load (response)
+		line = str(data['ticker'].values()).strip('[]') + '\n'
+		f.write(line)
+		
+		f.close()
+		return True
 
-usd_rur = pair('usd_rur', 'usd_rur_overnite.csv','https://btc-e.com/api/2/usd_rur/ticker', 60)
+period = 60
+i = 0
+usd_rur = Cryptocurrency('usd_rur', period)
+
+while True:
+	if i > 24 * period:
+		break
+	res = usd_rur.log_price()
+	if res:
+		i = i + 1
+		time.sleep(period)
