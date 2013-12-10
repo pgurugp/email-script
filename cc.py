@@ -6,7 +6,7 @@ import time
 
 
 class pair:
-	def __init__(self,name,fileLocation,url,period):
+	def __init__(self,name,fileLocation,period):
 		self.name = name
 		self.file = fileLocation
 		self.url = url
