@@ -16,18 +16,20 @@ class Cryptocurrency:
 		except urllib2.HTTPError as err:
 			data = json.load( '{"error":"' + str(err) + '"}' )
 			
+		self.data = data
 		return data
 		
-	def log_price(self):
+	def log_price(self,fetch_data=true):
 		f = open(self.file, 'a')
 		line = '\n'
 
-		data = self.get_latest_prices()
+		if fetch_data:
+			self.get_latest_prices()
 
-		if data['error'] == '':
-			line = str(data['ticker'].values()).strip('[]') + '\n'
+		if self.data['error'] == '':
+			line = str(self.data['ticker'].values()).strip('[]') + '\n'
 		else:
-			line = data['error'] + '\n'
+			line = self.data['error'] + '\n'
 		
 		f.write(line)
 		f.close()
