@@ -6,21 +6,28 @@ import time
 class Cryptocurrency:
 	def __init__(self,name):
 		self.name = name
-		self.file = self.name + '_overnight.csv'
+		self.file = 'data/' + self.name + '_overnight.csv'
 		self.url = 'https://btc-e.com/api/2/' + self.name + '/ticker'
+		
+	def get_latest_prices(self):
+		try:
+			data = json.load( urllib2.urlopen(self.url) )
+			data['error'] = ''
+		except urllib2.HTTPError as err:
+			data = json.load( '{"error":"' + str(err) + '"}' )
+			
+		return data
 		
 	def log_price(self):
 		f = open(self.file, 'a')
 		line = '\n'
 
-		try:
-			response = urllib2.urlopen(self.url)
-			data = json.load (response)
+		data = self.get_latest_prices()
+
+		if data['error'] == '':
 			line = str(data['ticker'].values()).strip('[]') + '\n'
-		except urllib2.HTTPError, err:
-			line = str(err) + '\n'
-		except:
-			line = '--\n'
+		else:
+			line = data['error'] + '\n'
 		
 		f.write(line)
 		f.close()
@@ -28,7 +35,7 @@ class Cryptocurrency:
 period = 60
 i = 0
 usd_rur = Cryptocurrency('usd_rur')
-btc_ltc = Cryptocurrency('btc_ltc')
+btc_ltc = Cryptocurrency('ltc_btc')
 
 while True:
 	if i > 24 * period:
