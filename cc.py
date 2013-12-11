@@ -9,6 +9,12 @@ class Cryptocurrency:
 		self.file = 'data/' + self.name + '_overnight.csv'
 		self.url = 'https://btc-e.com/api/2/' + self.name + '/ticker'
 		
+	'''
+	get_latest_prices() will get the prices from btc-e using the property "url" from the object.
+	It handles an error from the server.
+	It makes "data" a property of the object to be accessed by any method.
+	It returns data if the data is needed outside of the object.
+	'''
 	def get_latest_prices(self):
 		try:
 			data = json.load( urllib2.urlopen(self.url) )
@@ -18,7 +24,13 @@ class Cryptocurrency:
 			
 		self.data = data
 		return data
-		
+	
+	'''
+	log_price(fetch_data) opens the file indicated in property "file" and writes the latest prices to it.
+	fetch_data is a boolean value that specifies whether to grab the latest data in the method
+	or to use the property "data" without syncing with the server.
+	If there was an error, it writes the error to the file.
+	'''	
 	def log_price(self,fetch_data=true):
 		f = open(self.file, 'a')
 		line = '\n'
